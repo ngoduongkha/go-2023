@@ -16,36 +16,46 @@ var rootCmd = &cobra.Command{
 		sorter := utils.NewSorter()
 
 		var res interface{}
+
 		switch dataType {
-		case "int":
+		case dataTypeChecker{isInt: true}:
 			arr, err := parser.ParseInt(args)
 			if err != nil {
 				fmt.Println(err)
 				os.Exit(1)
 			}
 			res = sorter.SortIntArray(arr)
-		case "float":
+		case dataTypeChecker{isFloat: true}:
 			arr, err := parser.ParseFloat(args)
 			if err != nil {
 				fmt.Println(err)
 				os.Exit(1)
+
 			}
 			res = sorter.SortFloatArray(arr)
-		case "string":
+		case dataTypeChecker{isString: true}:
 			res = sorter.SortStringArray(args)
-			break
 		default:
 			fmt.Println("Invalid data type. Supported data types are 'int', 'float' or 'string'")
+			os.Exit(1)
 		}
 
 		fmt.Println(res)
 	},
 }
 
-var dataType string
+type dataTypeChecker struct {
+	isInt    bool
+	isFloat  bool
+	isString bool
+}
+
+var dataType = dataTypeChecker{}
 
 func init() {
-	rootCmd.PersistentFlags().StringVarP(&dataType, "type", "t", "", "Data type of the input. Supported data types are 'int', 'float' or 'string'")
+	rootCmd.Flags().BoolVarP(&dataType.isInt, "int", "i", false, "Sorts the input as integers")
+	rootCmd.Flags().BoolVarP(&dataType.isFloat, "float", "f", false, "Sorts the input as floats")
+	rootCmd.Flags().BoolVarP(&dataType.isString, "string", "s", false, "Sorts the input as strings")
 }
 
 func Execute() {
