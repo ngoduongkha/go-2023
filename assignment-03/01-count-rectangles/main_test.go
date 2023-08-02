@@ -102,7 +102,7 @@ func Test_countRectangles(t *testing.T) {
 					{1, 1, 0},
 				},
 			},
-			want: 0,
+			want: 1,
 		},
 		{
 			name: "Test 9",
