@@ -24,6 +24,12 @@ type HandlerFunc interface {
 	GetProduct(id uint) (product models.Product, err error)
 	UpdateProduct(id uint, product datatransfers.ProductUpdate) (err error)
 	CreateProduct(product datatransfers.ProductCreate) (err error)
+	DeleteProductByID(id uint) (err error)
+
+	GetCart(userId uint) (cart models.Cart, err error)
+	AddToCart(userId uint, dto datatransfers.AddCartItem) (err error)
+	RemoveFromCart(userId uint, cartItemId uint) (err error)
+	Checkout(userId uint) (datatransfers.Checkout, error)
 }
 
 type module struct {
@@ -31,9 +37,11 @@ type module struct {
 }
 
 type dbEntity struct {
-	conn         *gorm.DB
-	userOrmer    models.UserOrmer
-	productOrmer models.ProductOrmer
+	conn          *gorm.DB
+	userOrmer     models.UserOrmer
+	productOrmer  models.ProductOrmer
+	cartOrmer     models.CartOrmer
+	cartItemOrmer models.CartItemOrmer
 }
 
 func InitializeHandler() (err error) {
@@ -53,9 +61,11 @@ func InitializeHandler() (err error) {
 	// Compose handler modules
 	Handler = &module{
 		db: &dbEntity{
-			conn:         db,
-			userOrmer:    models.NewUserOrmer(db),
-			productOrmer: models.NewProductOrmer(db),
+			conn:          db,
+			userOrmer:     models.NewUserOrmer(db),
+			productOrmer:  models.NewProductOrmer(db),
+			cartOrmer:     models.NewCartOrmer(db),
+			cartItemOrmer: models.NewCartItemOrmer(db),
 		},
 	}
 	return

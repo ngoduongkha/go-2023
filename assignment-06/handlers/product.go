@@ -43,3 +43,10 @@ func (m *module) CreateProduct(product datatransfers.ProductCreate) (err error) 
 	}
 	return
 }
+
+func (m *module) DeleteProductByID(id uint) (err error) {
+	if err := m.db.productOrmer.DeleteByID(id); err != nil {
+		return errors.New("cannot delete product")
+	}
+	return
+}

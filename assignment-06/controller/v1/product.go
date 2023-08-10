@@ -69,3 +69,18 @@ func POSTProduct(c *gin.Context) {
 	}
 	c.JSON(http.StatusCreated, datatransfers.Response{Data: "product created"})
 }
+
+func DELETEProduct(c *gin.Context) {
+	var err error
+	var id64 uint64
+	if id64, err = strconv.ParseUint(c.Param("id"), 10, 32); err != nil {
+		c.JSON(http.StatusBadRequest, datatransfers.Response{Error: err.Error()})
+		return
+	}
+	id := uint(id64)
+	if err = handlers.Handler.DeleteProductByID(id); err != nil {
+		c.JSON(http.StatusInternalServerError, datatransfers.Response{Error: err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, datatransfers.Response{Data: "product deleted"})
+}

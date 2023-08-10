@@ -36,6 +36,14 @@ func InitializeRouter() (router *gin.Engine) {
 			product.GET("/:id", v1.GETProduct)
 			product.POST("", utils.AuthOnly, v1.POSTProduct)
 			product.PUT("/:id", utils.AuthOnly, v1.PUTProduct)
+			product.DELETE("/:id", utils.AuthOnly, v1.DELETEProduct)
+		}
+		cart := v1route.Group("/cart")
+		{
+			cart.GET("", utils.AuthOnly, v1.GETCart)
+			cart.POST("/items", utils.AuthOnly, v1.POSTCartItem)
+			cart.DELETE("/items/:id", utils.AuthOnly, v1.DELETECartItem)
+			cart.POST("/checkout", utils.AuthOnly, v1.POSTCheckout)
 		}
 	}
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))

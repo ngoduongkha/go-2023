@@ -11,7 +11,7 @@ type productOrm struct {
 }
 
 type Product struct {
-	ID        uint      `gorm:"primaryKey" json:"-"`
+	ID        uint      `gorm:"primaryKey" json:"id"`
 	Name      string    `gorm:"uniqueIndex" json:"name"`
 	Price     float64   `json:"price"`
 	Quantity  uint      `json:"quantity"`
@@ -24,6 +24,7 @@ type ProductOrmer interface {
 	GetOneByID(id uint) (product Product, err error)
 	InsertProduct(product Product) (err error)
 	UpdateProduct(product Product) (err error)
+	DeleteByID(id uint) (err error)
 }
 
 func NewProductOrmer(db *gorm.DB) ProductOrmer {
@@ -48,5 +49,10 @@ func (o *productOrm) InsertProduct(product Product) (err error) {
 
 func (o *productOrm) UpdateProduct(product Product) (err error) {
 	result := o.db.Model(&Product{}).Model(&product).Updates(&product)
+	return result.Error
+}
+
+func (o *productOrm) DeleteByID(id uint) (err error) {
+	result := o.db.Model(&Product{}).Where("id = ?", id).Delete(&Product{})
 	return result.Error
 }
