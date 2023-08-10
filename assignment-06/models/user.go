@@ -28,7 +28,7 @@ type UserOrmer interface {
 }
 
 func NewUserOrmer(db *gorm.DB) UserOrmer {
-	//_ = db.AutoMigrate(&User{})		// builds table when enabled
+	_ = db.AutoMigrate(&User{}) // builds table when enabled
 	return &userOrm{db}
 }
 
